@@ -1,7 +1,5 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-
-from webapp.articles_db import ArticlesDB
 from webapp.models import Article
 
 
