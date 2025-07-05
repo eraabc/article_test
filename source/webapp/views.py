@@ -20,8 +20,8 @@ def create_article(request):
         return render(request, 'create_article.html')
 
 
-def article_detail(request):
-    article_id = request.GET.get('id')
+def article_detail(request,*args,**kwargs):
+    article_id = kwargs.get('pk')
     if article_id:
         try:
             article = Article.objects.get(id=article_id)
