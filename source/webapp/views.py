@@ -34,6 +34,15 @@ def update_article(request,*args,pk,**kwargs):
         return render(request, 'update_article.html',{"article":article})
 
 
+def delete_article(request,*args,pk,**kwargs):
+    article = get_object_or_404(Article, pk=pk)
+    if request.method == "POST":
+        article.delete()
+        return redirect("index")
+    else:
+        return  render(request,'delete_article.html',{'article':article})
+
+
 def article_detail(request, *args, pk, **kwargs):
     article = get_object_or_404(Article, pk=pk)
     return render(request, 'detail_article.html', {"article": article})
