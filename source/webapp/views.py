@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
+
+from webapp.forms import ArticleForm
 # from django.http import HttpResponseRedirect, HttpResponseNotFound, Http404
 
 from webapp.models import Article
+from webapp.validation import validate
 
 
 # Create your views here.
@@ -12,14 +15,44 @@ def index(request):
 
 def create_article(request):
     if request.method == "POST":
-        title = request.POST.get('title')
-        content = request.POST.get('content')
-        author = request.POST.get('author')
-        article = Article.objects.create(title=title, content=content, author=author)
-        # return HttpResponseRedirect("/")
-        return redirect("article-detail", pk=article.pk)
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data.get('title')
+            content = form.cleaned_data.get('content')
+            author = form.cleaned_data.get('author')
+            article = Article.objects.create(title=title, content=content, author=author)
+            return redirect("article-detail", pk=article.pk)
+        else:
+            return render(request, 'create_article.html', {"form": form})
     else:
-        return render(request, 'create_article.html')
+        form = ArticleForm()
+        return render(request, 'create_article.html',{"form": form})
+
+
+def update_article(request,*args,pk,**kwargs):
+    article = get_object_or_404(Article, pk=pk)
+    if request.method == "POST":
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            article.title = form.cleaned_data.get('title')
+            article.content = form.cleaned_data.get('content')
+            article.author = form.cleaned_data.get('author')
+            article.save()
+            return redirect("article-detail", pk=article.pk)
+        else:
+            return render(request, 'update_article.html', {"form": form})
+    else:
+        form = ArticleForm(initial={'title': article.title, 'content': article.content, 'author': article.author})
+        return render(request, 'update_article.html',{"form": form})
+
+
+def delete_article(request,*args,pk,**kwargs):
+    article = get_object_or_404(Article, pk=pk)
+    if request.method == "POST":
+        article.delete()
+        return redirect("index")
+    else:
+        return  render(request,'delete_article.html',{'article':article})
 
 
 def article_detail(request, *args, pk, **kwargs):
