@@ -1,6 +1,9 @@
 {% csrf_token %}
 <label>Title:</label><br/>
 <input value="{{ article.title }}" type="text" name="title"/><br/>
+{% if errors.title %}
+    <p class="text-danger">{{ errors.title }}</p>
+{% endif %}
 <label>Text:</label><br/>
 <textarea name="content">{{ article.content }}</textarea><br/>
 <label>Author:</label><br/>
