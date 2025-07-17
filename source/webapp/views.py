@@ -18,7 +18,7 @@ def create_article(request):
         form = ArticleForm(request.POST)
         if form.is_valid():
             article = form.save()
-            return redirect("article-detail", pk=article.pk)
+            return redirect("article-detail", slug=article.slug)
         else:
             return render(request, 'create_article.html', {"form": form})
     else:
@@ -29,10 +29,10 @@ def create_article(request):
 def update_article(request,*args,pk,**kwargs):
     article = get_object_or_404(Article, pk=pk)
     if request.method == "POST":
-        form = ArticleForm(request.POST)
+        form = ArticleForm(request.POST,isinstance=article)
         if form.is_valid():
             article = form.save()
-            return redirect("article-detail", pk=article.pk)
+            return redirect("article-detail", slug=article.slug)
         else:
             return render(request, 'update_article.html', {"form": form})
     else:
@@ -49,7 +49,7 @@ def delete_article(request,*args,pk,**kwargs):
         return  render(request,'delete_article.html',{'article':article})
 
 
-def article_detail(request, *args, pk, **kwargs):
-    article = get_object_or_404(Article, pk=pk)
+def article_detail(request, *args, slug, **kwargs):
+    article = get_object_or_404(Article, slug=slug)
     return render(request, 'detail_article.html', {"article": article})
 

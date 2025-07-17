@@ -24,7 +24,7 @@ class ArticleForm(forms.ModelForm):
 
     class Meta:
         model = Article
-        exclude = ['created_at', 'updated_at']
+        exclude = ['created_at', 'updated_at','slug']
 
         error_messages = {
             'title': {
@@ -34,7 +34,7 @@ class ArticleForm(forms.ModelForm):
 
     def clean_title(self):
         title = self.cleaned_data['title']
-        if len(title) > 5:
+        if len(title) < 3:
             raise ValidationError('Нельзя так')
         return title
 
